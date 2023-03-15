@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+while getopts s: flag
+do
+	case "${flag}" in
+		s) subdomains=${OPTARG};;
+		h) help=${OPTARG};;
+	esac
+done
+if [ $# -eq 0 ]
+	then
+	echo "
+	usage : 
+		-s	subdomains file
+		output	use | tee <ouputfile> to save the out put to a file
+	"
+	exit 1
+fi
+cat $subdomains | xargs -n1 -P100 dig +short +retry=3 | grep -E '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}';
